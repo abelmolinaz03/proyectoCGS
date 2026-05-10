@@ -1,0 +1,237 @@
+/* Paleta de colores Mezquita-Catedral */
+:root {
+    --rojo-mezquita: #8B0000;    /* Rojo dovela */
+    --crema-mezquita: #FDF5E6;   /* Blanco hueso/piedra */
+    --dorado-mezquita: #C5A059;  /* Detalles dorados */
+    --texto-oscuro: #2c211a;
+}
+
+body {
+    background-color: var(--crema-mezquita);
+    color: var(--texto-oscuro);
+    /* Aplicamos Open Sans como fuente principal: muy moderna y legible */
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1.6;
+}
+
+/* Títulos con Montserrat: Fuente geométrica, pesada y muy actual */
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+}
+
+/* Navbar estilo Mezquita */
+.navbar {
+    background-color: var(--rojo-mezquita) !important;
+    border-bottom: 3px solid var(--dorado-mezquita);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    color: var(--crema-mezquita) !important;
+}
+
+.nav-link {
+    color: var(--crema-mezquita) !important;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    margin: 0 10px;
+}
+
+.nav-link:hover {
+    color: var(--dorado-mezquita) !important;
+}
+
+/* Botones modernos */
+.btn {
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 50px; /* Bordes redondeados para un look más app */
+    padding: 10px 25px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.btn-success {
+    background-color: var(--rojo-mezquita) !important;
+    border: 2px solid var(--dorado-mezquita) !important;
+}
+
+.btn-success:hover {
+    background-color: var(--dorado-mezquita) !important;
+    transform: scale(1.05);
+}
+
+/* Cards para Dashboard y Formularios */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background-color: var(--rojo-mezquita) !important;
+    color: var(--crema-mezquita) !important;
+    border-radius: 15px 15px 0 0 !important;
+    text-align: center;
+}
+
+/* Espaciado general del Dashboard */
+.dashboard-container {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+/* Tarjetas modernas */
+.card-custom {
+    border: none;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    background: white;
+    overflow: hidden;
+}
+
+.card-custom:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(139, 0, 0, 0.2); /* Sombra con el rojo mezquita */
+}
+
+/* Iconos circulares */
+.icon-box {
+    width: 80px;
+    height: 80px;
+    background-color: var(--crema-mezquita);
+    color: var(--rojo-mezquita);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2rem;
+    border: 2px solid var(--dorado-mezquita);
+}
+
+/* --- ESTILOS ESPECÍFICOS DEL DASHBOARD --- */
+.dashboard-container {
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+.card-custom {
+    border: none;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    background: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-custom:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(139, 0, 0, 0.15) !important;
+}
+
+/* --- ESTILOS UNIFICADOS PARA LOS ICONOS (icon-box) --- */
+.icon-box {
+    width: 80px;
+    height: 80px;
+    background-color: var(--crema-mezquita); /* Fondo blanco piedra de la Mezquita */
+    color: var(--rojo-mezquita); /* Icono en rojo dovela */
+    border-radius: 50%; /* Círculo perfecto */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px; /* Centrado con separación inferior */
+    font-size: 2rem; /* Tamaño del icono */
+    border: 2px solid var(--dorado-mezquita); /* Borde dorado de detalles */
+    box-shadow: 0 5px 15px rgba(139, 0, 0, 0.1); /* Sombra suave con tono rojo */
+}
+/* --- ESTILOS DINÁMICOS DEL DASHBOARD --- */
+
+/* Contenedor principal del banner */
+.hero-section {
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    padding: 80px 20px;
+    color: var(--crema-mezquita); /* Usamos las variables que definimos antes */
+    border-bottom: 5px solid var(--dorado-mezquita);
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Capa oscura para que el texto se lea siempre bien sobre la imagen */
+.hero-overlay {
+    background: rgba(139, 0, 0, 0.6); /* Rojo Mezquita con transparencia */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Aseguramos que el texto esté por encima de la capa oscura */
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* --- ESTILOS DE LA PÁGINA PRINCIPAL (LANDING) --- */
+
+.hero-home {
+    /* Gradiente con los colores de los arcos sobre la imagen */
+    background: linear-gradient(rgba(44, 33, 26, 0.6), rgba(139, 0, 0, 0.5)), 
+                url('https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=1200');
+    background-size: cover;
+    background-position: center;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    color: var(--crema-mezquita);
+    border-bottom: 6px solid var(--dorado-mezquita);
+}
+
+.hero-home h1 {
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 2px;
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: var(--rojo-mezquita);
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+/* Efecto sutil al pasar el ratón por los iconos de deportes */
+.card-custom:hover .feature-icon {
+    transform: scale(1.2);
+    color: var(--dorado-mezquita);
+}
+
+svg.feature-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--rojo-mezquita);
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.card-custom:hover svg.feature-icon {
+    transform: scale(1.2);
+    color: var(--dorado-mezquita);
+}
+
+/* Contadores de la sección de cifras */
+.stat-number {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    color: var(--dorado-mezquita);
+}
