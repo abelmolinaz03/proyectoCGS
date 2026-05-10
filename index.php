@@ -1,3 +1,11 @@
+<?php
+    session_start();
+    include("includes/db.php");
+    if (isset($_SESSION['usuario_id'])) {
+        header('Location: /proyectoCGS/pages/dashboard.php');
+        exit();
+    }
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,15 +21,7 @@
 </head>
 <body>
 
-    <?php 
-        session_start();
-        if (isset($_SESSION['usuario_id'])) {
-            header('Location: /proyectoCGS/pages/dashboard.php');
-            exit();
-        }
-        include("includes/header.php"); 
-        include("includes/db.php");
-    ?>
+    <?php include("includes/header.php"); ?>
 
     <main>
         <section class="hero-home">

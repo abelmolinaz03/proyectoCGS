@@ -46,7 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form method="POST">
             <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
             <input type="password" name="password" class="form-control mb-3" placeholder="Contraseña" required>
-            <button type="submit" class="btn w-100 text-white" style="background-color: var(--rojo-mezquita);">Entrar</button>
+            <button type="submit" class="btn w-100 text-white mb-2" style="background-color: var(--rojo-mezquita);">Entrar</button>
+            <a href="javascript:history.back()" class="btn btn-outline-secondary w-100">← Volver atrás</a>
         </form>
     </div>
 </div>
