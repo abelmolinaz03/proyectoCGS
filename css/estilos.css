@@ -9,9 +9,11 @@
 body {
     background-color: var(--crema-mezquita);
     color: var(--texto-oscuro);
-    /* Aplicamos Open Sans como fuente principal: muy moderna y legible */
     font-family: 'Open Sans', sans-serif;
     line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Títulos con Montserrat: Fuente geométrica, pesada y muy actual */
@@ -234,4 +236,103 @@ svg.feature-icon {
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
     color: var(--dorado-mezquita);
+}
+
+/* --- CONTACTO --- */
+.contact-hero {
+    background-color: #6b0000;
+    color: var(--crema-mezquita);
+    padding: 60px 0 40px;
+    border-bottom: 4px solid var(--dorado-mezquita);
+    border-top: 4px solid var(--dorado-mezquita);
+}
+
+.contact-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    background-color: var(--crema-mezquita);
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.info-icon {
+    width: 45px;
+    height: 45px;
+    background-color: var(--rojo-mezquita);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+    font-size: 1rem;
+}
+
+.info-text h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    color: var(--rojo-mezquita);
+    margin-bottom: 2px;
+}
+
+.info-text p {
+    margin: 0;
+    color: var(--texto-oscuro);
+    font-size: 0.95rem;
+}
+
+.divider-gold {
+    height: 3px;
+    background: linear-gradient(90deg, var(--dorado-mezquita), transparent);
+    border: none;
+    margin: 20px 0;
+}
+
+.form-control:focus {
+    border-color: var(--dorado-mezquita);
+    box-shadow: 0 0 0 0.2rem rgba(197,160,89,0.25);
+}
+
+.btn-contacto {
+    background-color: var(--rojo-mezquita);
+    color: white;
+    border: none;
+}
+
+.btn-contacto:hover {
+    background-color: #6b0000;
+    color: white;
+}
+
+.mapa-placeholder {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 3px solid var(--dorado-mezquita);
+}
+
+/* Carrusel hero */
+.carousel-caption {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0;
+}
+
+#heroCarousel {
+    margin-top: 0;
+}
+
+#heroCarousel .carousel-item img {
+    height: 100vh;
+    object-fit: cover;
+    filter: brightness(0.55);
 }

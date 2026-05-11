@@ -26,36 +26,38 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     exit();
 }
 ?>
+<main style="flex: 1;">
+    <div class="container py-5" style="max-width: 600px;">
+        <div class="card shadow border-0 p-4">
+            <h2 class="fw-bold mb-1" style="color: var(--rojo-mezquita);">
+                <i class="fa-solid fa-pen me-2"></i>Editar Marca
+            </h2>
+            <p class="text-muted mb-4">Deporte: <strong><?php echo $deporte; ?></strong></p>
 
-<div class="container py-5" style="max-width: 600px;">
-    <div class="card shadow border-0 p-4">
-        <h2 class="fw-bold mb-1" style="color: var(--rojo-mezquita);">
-            <i class="fa-solid fa-pen me-2"></i>Editar Marca
-        </h2>
-        <p class="text-muted mb-4">Deporte: <strong><?php echo $deporte; ?></strong></p>
+            <form method="POST" id="formEditar">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Marca / Puntuación</label>
+                    <input type="text" name="marca" class="form-control" 
+                        value="<?php echo htmlspecialchars($marca['tiempo_o_puntuacion']); ?>" required>
+                </div>
 
-        <form method="POST" id="formEditar">
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Marca / Puntuación</label>
-                <input type="text" name="marca" class="form-control" 
-                       value="<?php echo htmlspecialchars($marca['tiempo_o_puntuacion']); ?>" required>
-            </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Fecha</label>
+                    <input type="date" name="fecha" class="form-control" 
+                        value="<?php echo htmlspecialchars($marca['fecha_registro']); ?>" required>
+                </div>
 
-            <div class="mb-4">
-                <label class="form-label fw-semibold">Fecha</label>
-                <input type="date" name="fecha" class="form-control" 
-                       value="<?php echo htmlspecialchars($marca['fecha_registro']); ?>" required>
-            </div>
-
-            <div class="d-flex gap-2">
-                <button type="button" class="btn text-white" style="background-color: var(--rojo-mezquita);"
-                        onclick="confirmEdit()">
-                    <i class="fa-solid fa-floppy-disk me-2"></i>Actualizar
-                </button>
-                <a href="index.php" class="btn btn-outline-secondary">Cancelar</a>
-            </div>
-        </form>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn text-white" style="background-color: var(--rojo-mezquita);"
+                            onclick="confirmEdit()">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>Actualizar
+                    </button>
+                    <a href="index.php" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+
+</main>
 
 <?php include("../../includes/footer.php"); ?>

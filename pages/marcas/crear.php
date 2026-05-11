@@ -16,33 +16,34 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     exit();
 }
 ?>
+<main style="flex: 1;">
+    <div class="container py-5" style="max-width: 600px;">
+        <div class="card shadow border-0 p-4">
+            <h2 class="fw-bold mb-1" style="color: var(--rojo-mezquita);">
+                <i class="fa-solid fa-plus me-2"></i>Añadir Marca
+            </h2>
+            <p class="text-muted mb-4">Deporte: <strong><?php echo $_SESSION['deporte_usuario']; ?></strong></p>
 
-<div class="container py-5" style="max-width: 600px;">
-    <div class="card shadow border-0 p-4">
-        <h2 class="fw-bold mb-1" style="color: var(--rojo-mezquita);">
-            <i class="fa-solid fa-plus me-2"></i>Añadir Marca
-        </h2>
-        <p class="text-muted mb-4">Deporte: <strong><?php echo $_SESSION['deporte_usuario']; ?></strong></p>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Marca / Puntuación</label>
+                    <input type="text" name="marca" class="form-control" placeholder="Ej: 11.20s, 3 sets ganados..." required>
+                </div>
 
-        <form method="POST">
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Marca / Puntuación</label>
-                <input type="text" name="marca" class="form-control" placeholder="Ej: 11.20s, 3 sets ganados..." required>
-            </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Fecha</label>
+                    <input type="date" name="fecha" class="form-control" required>
+                </div>
 
-            <div class="mb-4">
-                <label class="form-label fw-semibold">Fecha</label>
-                <input type="date" name="fecha" class="form-control" required>
-            </div>
-
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn text-white" style="background-color: var(--rojo-mezquita);">
-                    <i class="fa-solid fa-floppy-disk me-2"></i>Guardar
-                </button>
-                <a href="index.php" class="btn btn-outline-secondary">Cancelar</a>
-            </div>
-        </form>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn text-white" style="background-color: var(--rojo-mezquita);">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>Guardar
+                    </button>
+                    <a href="index.php" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+</main>
 
 <?php include("../../includes/footer.php"); ?>
