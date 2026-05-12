@@ -71,7 +71,7 @@ $info = $deportes[$miDeporteKey] ?? $deportes['atletismo'];
 
 <?php include("../includes/header.php"); ?>
 
-<main class="container my-5">
+<main class="container my-5" style="flex: 1;">
     <section class="hero-section text-center" style="background-image: url('<?php echo $info['img']; ?>');">
         <div class="hero-overlay"></div>
         <div class="hero-content">

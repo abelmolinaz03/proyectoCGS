@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="/proyectoCGS/css/estilos.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: var(--rojo-mezquita); border-bottom: 3px solid var(--dorado-mezquita);">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top" style="background-color: var(--rojo-mezquita); border-bottom: 3px solid var(--dorado-mezquita);">
         <div class="container">
             <a class="navbar-brand fw-bold" href="/proyectoCGS/index.php">
                 SPORTHUB <span style="color: var(--dorado-mezquita);">CÓRDOBA</span>
