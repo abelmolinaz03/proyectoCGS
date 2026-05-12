@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">    
     <link rel="stylesheet" href="/proyectoCGS/css/estilos.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/proyectoCGS/js/scripts.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top" style="background-color: var(--rojo-mezquita); border-bottom: 3px solid var(--dorado-mezquita);">
