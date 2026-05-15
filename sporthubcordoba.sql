@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3307
--- Tiempo de generación: 14-05-2026 a las 13:17:59
+-- Tiempo de generación: 16-05-2026 a las 00:09:05
 -- Versión del servidor: 10.4.25-MariaDB
 -- Versión de PHP: 8.1.10
 
@@ -80,7 +80,7 @@ CREATE TABLE `marcas_deportivas` (
 
 INSERT INTO `marcas_deportivas` (`id_marca`, `id_usuario`, `deporte`, `tiempo_o_puntuacion`, `fecha_registro`) VALUES
 (4, 3, 'Atletismo', '10.989 segundos, 100', '2026-05-09'),
-(5, 1, 'Atletismo', '50.20 m, Lanzamiento', '2026-05-04'),
+(5, 1, 'Atletismo', '50.20 m, Lanzamiento', '2026-05-05'),
 (6, 1, 'Atletismo', 'prueba', '2026-05-07'),
 (7, 1, 'Atletismo', 'prueba1', '2026-05-15'),
 (8, 1, 'Atletismo', '10.989 segundos, 100', '2026-04-30'),
@@ -154,17 +154,18 @@ CREATE TABLE `usuarios` (
   `apellidos` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
   `email` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
   `password` varchar(255) COLLATE utf8_spanish_ci NOT NULL,
-  `deporte_principal` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL
+  `deporte_principal` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `rol` enum('usuario','admin') COLLATE utf8_spanish_ci DEFAULT 'usuario'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellidos`, `email`, `password`, `deporte_principal`) VALUES
-(1, 'Abel', 'Molina Zamorano', 'abel@gmail.com', '$2y$10$qluRaqE8Dpr1oe5AoUk43uSvmSp.eQFlPAbxBgq/fOCoy1yYMmsN2', 'Atletismo'),
-(2, 'Eloisa', 'Peñaloza Mendoza', 'eloisa@gmail.com', '$2y$10$q9XuYzWsR3ozwIN2fa.MwOKjwqENYaobj9Z5Zd/nXuNUhPnUzWLYG', 'Tenis'),
-(3, 'usuarioPrueba', 'prueba', 'prueba@gmail.com', '$2y$10$bqIFwu38JQ866KuZlZPolewremtKaoT7GHRVJrBkE1tkjAND03XJq', 'Atletismo');
+INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellidos`, `email`, `password`, `deporte_principal`, `rol`) VALUES
+(1, 'Abel', 'Molina Zamorano', 'abel@gmail.com', '$2y$10$qluRaqE8Dpr1oe5AoUk43uSvmSp.eQFlPAbxBgq/fOCoy1yYMmsN2', 'Atletismo', 'admin'),
+(2, 'Eloisa', 'Peñaloza Mendoza', 'eloisa@gmail.com', '$2y$10$q9XuYzWsR3ozwIN2fa.MwOKjwqENYaobj9Z5Zd/nXuNUhPnUzWLYG', 'Tenis', 'usuario'),
+(3, 'usuarioPrueba', 'prueba', 'prueba@gmail.com', '$2y$10$bqIFwu38JQ866KuZlZPolewremtKaoT7GHRVJrBkE1tkjAND03XJq', 'Atletismo', 'usuario');
 
 --
 -- Índices para tablas volcadas
