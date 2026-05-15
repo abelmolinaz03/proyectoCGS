@@ -2,22 +2,6 @@
 if (session_status() === PHP_SESSION_NONE) session_start();
 include("../includes/db.php");
 include("../includes/header.php");
-
-$enviado = false;
-$error = "";
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $nombre  = trim($_POST['nombre'] ?? '');
-    $email   = trim($_POST['email'] ?? '');
-    $asunto  = trim($_POST['asunto'] ?? '');
-    $mensaje = trim($_POST['mensaje'] ?? '');
-
-    if (empty($nombre) || empty($email) || empty($asunto) || empty($mensaje)) {
-        $error = "Por favor, completa todos los campos.";
-    } else {
-        $enviado = true;
-    }
-}
 ?>
 
 <main style="flex: 1;">
@@ -87,49 +71,48 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <div class="card contact-card p-4 h-100 d-flex flex-column">
                         <h4 class="fw-bold mb-4" style="color: var(--rojo-mezquita);">ENVÍANOS UN MENSAJE</h4>
 
-                        <?php if ($enviado): ?>
-                            <div class="alert alert-success text-center fw-bold">
-                                <i class="fa-solid fa-circle-check me-2"></i>
-                                ¡Mensaje enviado! Te responderemos en breve.
-                            </div>
-                        <?php else: ?>
-                            <?php if ($error): ?>
-                                <div class="alert alert-danger small"><?php echo $error; ?></div>
-                            <?php endif; ?>
+                        <div data-fs-success style="display:none;" class="alert alert-success text-center fw-bold">
+                            <i class="fa-solid fa-circle-check me-2"></i>
+                            ¡Mensaje enviado! Te responderemos en breve.
+                        </div>
+                        <div data-fs-error style="display:none;" class="alert alert-danger small"></div>
 
-                            <form method="POST" action="contacto.php" class="d-flex flex-column flex-grow-1">
-                                <div class="row g-3 flex-grow-1">
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold text-uppercase" style="font-family: 'Montserrat', sans-serif; font-size: 0.75rem;">Nombre completo</label>
-                                        <input type="text" name="nombre" class="form-control" placeholder="Tu nombre" value="<?php echo htmlspecialchars($_POST['nombre'] ?? ''); ?>" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold text-uppercase" style="font-family: 'Montserrat', sans-serif; font-size: 0.75rem;">Email</label>
-                                        <input type="email" name="email" class="form-control" placeholder="ejemplo@email.com" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required>
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label small fw-bold text-uppercase" style="font-family: 'Montserrat', sans-serif; font-size: 0.75rem;">Asunto</label>
-                                        <select name="asunto" class="form-select" required>
-                                            <option value="" disabled <?php echo empty($_POST['asunto']) ? 'selected' : ''; ?>>Selecciona un asunto</option>
-                                            <option value="Información general" <?php echo ($_POST['asunto'] ?? '') === 'Información general' ? 'selected' : ''; ?>>Información general</option>
-                                            <option value="Soporte técnico" <?php echo ($_POST['asunto'] ?? '') === 'Soporte técnico' ? 'selected' : ''; ?>>Soporte técnico</option>
-                                            <option value="Colaboraciones" <?php echo ($_POST['asunto'] ?? '') === 'Colaboraciones' ? 'selected' : ''; ?>>Colaboraciones y patrocinios</option>
-                                            <option value="Incidencias" <?php echo ($_POST['asunto'] ?? '') === 'Incidencias' ? 'selected' : ''; ?>>Incidencias con la cuenta</option>
-                                            <option value="Otro" <?php echo ($_POST['asunto'] ?? '') === 'Otro' ? 'selected' : ''; ?>>Otro</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label small fw-bold text-uppercase" style="font-family: 'Montserrat', sans-serif; font-size: 0.75rem;">Mensaje</label>
-                                        <textarea name="mensaje" class="form-control" rows="5" style="resize:none;" placeholder="Escribe tu mensaje aquí..." required><?php echo htmlspecialchars($_POST['mensaje'] ?? ''); ?></textarea>
-                                    </div>
-                                    <div class="col-12">
-                                        <button type="submit" class="btn btn-contacto px-4">
-                                            <i class="fa-solid fa-paper-plane me-2"></i>Enviar mensaje
-                                        </button>
-                                    </div>
+                        <form id="contacto-form" class="d-flex flex-column flex-grow-1">
+                            <div class="row g-3 flex-grow-1">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-uppercase" style="font-family: 'Montserrat', sans-serif; font-size: 0.75rem;">Nombre completo</label>
+                                    <input type="text" name="nombre" class="form-control" placeholder="Tu nombre" required data-fs-field>
+                                    <span data-fs-error="nombre" class="text-danger small"></span>
                                 </div>
-                            </form>
-                        <?php endif; ?>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-uppercase" style="font-family: 'Montserrat', sans-serif; font-size: 0.75rem;">Email</label>
+                                    <input type="email" name="email" class="form-control" placeholder="ejemplo@email.com" required data-fs-field>
+                                    <span data-fs-error="email" class="text-danger small"></span>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-uppercase" style="font-family: 'Montserrat', sans-serif; font-size: 0.75rem;">Asunto</label>
+                                    <select name="asunto" class="form-select" required data-fs-field>
+                                        <option value="" disabled selected>Selecciona un asunto</option>
+                                        <option value="Información general">Información general</option>
+                                        <option value="Soporte técnico">Soporte técnico</option>
+                                        <option value="Colaboraciones">Colaboraciones y patrocinios</option>
+                                        <option value="Incidencias">Incidencias con la cuenta</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
+                                    <span data-fs-error="asunto" class="text-danger small"></span>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-uppercase" style="font-family: 'Montserrat', sans-serif; font-size: 0.75rem;">Mensaje</label>
+                                    <textarea name="mensaje" class="form-control" rows="5" style="resize:none;" placeholder="Escribe tu mensaje aquí..." required data-fs-field></textarea>
+                                    <span data-fs-error="mensaje" class="text-danger small"></span>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-contacto px-4" data-fs-submit-btn>
+                                        <i class="fa-solid fa-paper-plane me-2"></i>Enviar mensaje
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
@@ -145,5 +128,51 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </section>
 
 </main>
+
+<script>
+    document.getElementById('contacto-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const form = e.target;
+        const btn = form.querySelector('[type="submit"]');
+        const successDiv = document.querySelector('[data-fs-success]');
+        const errorDiv = document.querySelector('[data-fs-error]');
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Enviando...';
+        errorDiv.style.display = 'none';
+
+        try {
+            const res = await fetch('https://formspree.io/f/xaqvrjod', {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (res.ok) {
+                form.style.display = 'none';
+                successDiv.style.display = 'block';
+                setTimeout(() => {
+                    successDiv.style.display = 'none';
+                    form.reset();
+                    form.style.display = '';
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i>Enviar mensaje';
+                }, 4000);
+            } else {
+                const data = await res.json();
+                const msg = data.errors?.map(err => err.message).join(' ') || 'Error al enviar. Inténtalo de nuevo.';
+                errorDiv.textContent = msg;
+                errorDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i>Enviar mensaje';
+            }
+        } catch (_) {
+            errorDiv.textContent = 'Error de conexión. Comprueba tu red e inténtalo de nuevo.';
+            errorDiv.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i>Enviar mensaje';
+        }
+    });
+</script>
 
 <?php include("../includes/footer.php"); ?>
