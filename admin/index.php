@@ -1,21 +1,20 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 include("../includes/db.php");
-include("../includes/header.php");
 
-// Verificar que es admin (puedes añadir un campo 'rol' a tu tabla USUARIOS)
-if(!isset($_SESSION['usuario_id'])){
+if(!isset($_SESSION['usuario_id']) || ($_SESSION['rol'] ?? '') !== 'admin'){
     header("Location: /proyectoCGS/pages/login.php");
     exit();
 }
 
 // Estadísticas
-$total_usuarios = $conexion->query("SELECT COUNT(*) FROM USUARIOS")->fetchColumn();
+$total_usuarios = $conexion->query("SELECT COUNT(*) FROM usuarios")->fetchColumn();
 $total_rutinas = $conexion->query("SELECT COUNT(*) FROM rutinas WHERE tipo = 'oficial'")->fetchColumn();
 $total_marcas = $conexion->query("SELECT COUNT(*) FROM marcas_deportivas")->fetchColumn();
 
-// Rutinas oficiales
 $rutinas = $conexion->query("SELECT * FROM rutinas WHERE tipo = 'oficial' ORDER BY fecha_creacion DESC")->fetchAll(PDO::FETCH_ASSOC);
+
+include("../includes/header.php");
 ?>
 
 <main style="flex: 1;">

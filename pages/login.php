@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $stmt = $conexion->prepare("SELECT * FROM USUARIOS WHERE email = ?");
+    $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE email = ?");
     $stmt->execute([$email]);
     $usuario = $stmt->fetch();
 
@@ -17,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['usuario_id'] = $usuario['id_usuario'];
         $_SESSION['nombre'] = $usuario['nombre'];
         $_SESSION['deporte_usuario'] = $usuario['deporte_principal'];
+        $_SESSION['rol'] = $usuario['rol'];
       
         header("Location: dashboard.php"); 
         exit();

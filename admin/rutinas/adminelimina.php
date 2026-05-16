@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) session_start();
 include("../../includes/db.php");
 
-if(!isset($_SESSION['usuario_id'])){
+if(!isset($_SESSION['usuario_id']) || ($_SESSION['rol'] ?? '') !== 'admin'){
     header("Location: /proyectoCGS/pages/login.php");
     exit();
 }

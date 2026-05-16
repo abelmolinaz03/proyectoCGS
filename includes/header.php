@@ -1,4 +1,14 @@
 <?php if (session_status() === PHP_SESSION_NONE) { session_start(); } ?>
+<?php
+// Si el usuario está logueado pero la sesión no tiene el rol (sesiones antiguas), lo cargamos de la BD
+if (isset($_SESSION['usuario_id']) && !isset($_SESSION['rol'])) {
+    include_once($_SERVER['DOCUMENT_ROOT'] . '/proyectoCGS/includes/db.php');
+    $stmt = $conexion->prepare("SELECT rol FROM usuarios WHERE id_usuario = ?");
+    $stmt->execute([$_SESSION['usuario_id']]);
+    $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+    $_SESSION['rol'] = $fila['rol'] ?? 'usuario';
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -48,6 +58,11 @@
                                 <li><a class="dropdown-item py-2" href="/proyectoCGS/pages/dashboard.php">
                                     <i class="fa-solid fa-gauge me-2"></i> Mi Dashboard</a>
                                 </li>
+                                <?php if(($_SESSION['rol'] ?? '') === 'admin'): ?>
+                                <li><a class="dropdown-item py-2" href="/proyectoCGS/admin/index.php">
+                                    <i class="fa-solid fa-screwdriver-wrench me-2"></i> Panel de Admin</a>
+                                </li>
+                                <?php endif; ?>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item py-2 text-danger" href="/proyectoCGS/pages/logout.php">
                                     <i class="fa-solid fa-power-off me-2"></i> Cerrar Sesión</a>

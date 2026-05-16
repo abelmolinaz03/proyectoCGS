@@ -1,7 +1,9 @@
 <?php
 include("../../includes/auth.php");
 include("../../includes/db.php");
-include("../../includes/header.php");
+include("../../includes/validaciones.php");
+
+$errores = [];
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     $usuario_id = $_SESSION['usuario_id'];
@@ -9,12 +11,20 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     $marca = trim($_POST['marca']);
     $fecha = trim($_POST['fecha']);
 
-    $stmt = $conexion->prepare("INSERT INTO marcas_deportivas (id_usuario, deporte, tiempo_o_puntuacion, fecha_registro) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$usuario_id, $deporte, $marca, $fecha]);
+    $errores = validar_longitudes([
+        [$marca, 20, 'Marca / Puntuación'],
+    ]);
 
-    header("Location: index.php");
-    exit();
+    if(empty($errores)){
+        $stmt = $conexion->prepare("INSERT INTO marcas_deportivas (id_usuario, deporte, tiempo_o_puntuacion, fecha_registro) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$usuario_id, $deporte, $marca, $fecha]);
+
+        header("Location: index.php");
+        exit();
+    }
 }
+
+include("../../includes/header.php");
 ?>
 <main style="flex: 1;">
     <div class="container py-5" style="max-width: 600px;">
@@ -27,7 +37,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             <form method="POST">
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Marca / Puntuación</label>
-                    <input type="text" name="marca" class="form-control" placeholder="Ej: 11.20s, 3 sets ganados..." required>
+                    <?php foreach($errores as $err): ?>
+                        <div class="alert alert-danger py-2 small"><?php echo $err; ?></div>
+                    <?php endforeach; ?>
+                    <input type="text" name="marca" class="form-control" placeholder="Ej: 11.20s, 3 sets ganados..." maxlength="20" required>
                 </div>
 
                 <div class="mb-4">

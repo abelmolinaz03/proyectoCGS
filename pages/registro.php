@@ -1,6 +1,7 @@
 <?php
 // 1. Conexión a la base de datos
 include("../includes/db.php");
+include("../includes/validaciones.php");
 
 $errores = [];
 $registro_exitoso = false;
@@ -21,10 +22,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errores[] = "Por favor, completa todos los campos.";
     }
 
+    $errores = array_merge($errores, validar_longitudes([
+        [$nombre, 50, 'Nombre'],
+        [$apellidos, 100, 'Apellidos'],
+    ]));
+
     if (empty($errores)) {
         try {
             // 1. Comprobar si el email ya existe
-            $stmt_check = $conexion->prepare("SELECT id_usuario FROM USUARIOS WHERE email = ?");
+            $stmt_check = $conexion->prepare("SELECT id_usuario FROM usuarios WHERE email = ?");
             $stmt_check->execute([$email]);
             
             if ($stmt_check->rowCount() > 0) {
@@ -34,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
                 
                 // Añadimos deporte_principal y el 5º interrogante
-                $stmt = $conexion->prepare("INSERT INTO USUARIOS (nombre, apellidos, email, password, deporte_principal) VALUES (?, ?, ?, ?, ?)");
+                $stmt = $conexion->prepare("INSERT INTO usuarios (nombre, apellidos, email, password, deporte_principal) VALUES (?, ?, ?, ?, ?)");
                 
                 // Pasamos los 5 valores en el array
                 if ($stmt->execute([$nombre, $apellidos, $email, $passwordHash, $deporte])) {
@@ -85,8 +91,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php endif; ?>
 
         <form method="POST" action="registro.php" class="<?php echo $registro_exitoso ? 'd-none' : ''; ?>">
-            <input type="text" name="nombre" class="form-control mb-2" placeholder="Nombre" required>
-            <input type="text" name="apellidos" class="form-control mb-2" placeholder="Apellidos" required>
+            <input type="text" name="nombre" class="form-control mb-2" placeholder="Nombre" maxlength="50" required>
+            <input type="text" name="apellidos" class="form-control mb-2" placeholder="Apellidos" maxlength="100" required>
             <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
             <input type="password" name="password" class="form-control mb-2" placeholder="Contraseña" required>
             
@@ -97,7 +103,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <?php endforeach; ?>
             </select>
 
-            <button type="submit" class="btn btn-registro w-100 py-2 fw-bold">Registrarse</button>
+            <button type="submit" class="btn btn-registro w-100 py-2 fw-bold mb-2">Registrarse</button>
+            <a href="javascript:history.back()" class="btn btn-outline-secondary w-100">← Volver atrás</a>
         </form>
 
         <p class="mt-3 text-center mb-0">
