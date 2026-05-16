@@ -1,9 +1,9 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 include("../../includes/db.php");
-include("../../includes/header.php");
+include("../../includes/validaciones.php");
 
-if(!isset($_SESSION['usuario_id'])){
+if(!isset($_SESSION['usuario_id']) || ($_SESSION['rol'] ?? '') !== 'admin'){
     header("Location: /proyectoCGS/pages/login.php");
     exit();
 }
@@ -29,33 +29,46 @@ $ejercicios = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
 $deportes = ["Atletismo", "Fútbol", "Baloncesto", "Pádel", "Ciclismo", "Natación", "Tenis"];
 
+$errores = [];
+
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     $titulo = trim($_POST['titulo']);
     $descripcion = trim($_POST['descripcion']);
     $deporte = $_POST['deporte'];
     $dificultad = $_POST['dificultad'];
     $duracion = trim($_POST['duracion_minutos']);
+    $duracion = $duracion !== '' ? (int)$duracion : null;
 
-    $stmt = $conexion->prepare("UPDATE rutinas SET titulo=?, descripcion=?, deporte=?, dificultad=?, duracion_minutos=? WHERE id_rutina=? AND tipo='oficial'");
-    $stmt->execute([$titulo, $descripcion, $deporte, $dificultad, $duracion, $id_rutina]);
+    $errores = validar_longitudes([
+        [$titulo, 100, 'Título'],
+    ]);
 
-    $conexion->prepare("DELETE FROM ejercicios_rutina WHERE id_rutina = ?")->execute([$id_rutina]);
+    if(empty($errores)){
+        $stmt = $conexion->prepare("UPDATE rutinas SET titulo=?, descripcion=?, deporte=?, dificultad=?, duracion_minutos=? WHERE id_rutina=? AND tipo='oficial'");
+        $stmt->execute([$titulo, $descripcion, $deporte, $dificultad, $duracion, $id_rutina]);
 
-    $nombres = $_POST['ejercicio_nombre'] ?? [];
-    $series = $_POST['ejercicio_series'] ?? [];
-    $reps = $_POST['ejercicio_repeticiones'] ?? [];
-    $descansos = $_POST['ejercicio_descanso'] ?? [];
+        $conexion->prepare("DELETE FROM ejercicios_rutina WHERE id_rutina = ?")->execute([$id_rutina]);
 
-    foreach($nombres as $i => $nombre){
-        if(!empty($nombre)){
-            $stmt2 = $conexion->prepare("INSERT INTO ejercicios_rutina (id_rutina, nombre, series, repeticiones, descanso_segundos, orden) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt2->execute([$id_rutina, $nombre, $series[$i], $reps[$i], $descansos[$i], $i+1]);
+        $nombres = $_POST['ejercicio_nombre'] ?? [];
+        $series = $_POST['ejercicio_series'] ?? [];
+        $reps = $_POST['ejercicio_repeticiones'] ?? [];
+        $descansos = $_POST['ejercicio_descanso'] ?? [];
+
+        foreach($nombres as $i => $nombre){
+            if(!empty($nombre)){
+                $serie = isset($series[$i]) && $series[$i] !== '' ? (int)$series[$i] : null;
+                $descanso = isset($descansos[$i]) && $descansos[$i] !== '' ? (int)$descansos[$i] : null;
+                $stmt2 = $conexion->prepare("INSERT INTO ejercicios_rutina (id_rutina, nombre, series, repeticiones, descanso_segundos, orden) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt2->execute([$id_rutina, $nombre, $serie, $reps[$i], $descanso, $i+1]);
+            }
         }
-    }
 
-    header("Location: /proyectoCGS/admin/index.php");
-    exit();
+        header("Location: /proyectoCGS/admin/index.php");
+        exit();
+    }
 }
+
+include("../../includes/header.php");
 ?>
 
 <main style="flex: 1;">
@@ -68,7 +81,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <form method="POST" id="formEditar">
             <div class="mb-3">
                 <label class="form-label fw-semibold">Título</label>
-                <input type="text" name="titulo" class="form-control" value="<?php echo htmlspecialchars($rutina['titulo']); ?>" required>
+                <?php foreach($errores as $err): ?>
+                    <div class="alert alert-danger py-2 small"><?php echo $err; ?></div>
+                <?php endforeach; ?>
+                <input type="text" name="titulo" class="form-control" value="<?php echo htmlspecialchars($rutina['titulo']); ?>" maxlength="100" required>
             </div>
 
             <div class="mb-3">
@@ -111,7 +127,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     <div class="row g-2">
                         <div class="col-md-4">
                             <label class="form-label small fw-semibold">Ejercicio</label>
-                            <input type="text" name="ejercicio_nombre[]" class="form-control form-control-sm" placeholder="Ej: Sentadillas">
+                            <input type="text" name="ejercicio_nombre[]" class="form-control form-control-sm" placeholder="Ej: Sentadillas" maxlength="100">
                         </div>
                         <div class="col-md-2">
                             <label class="form-label small fw-semibold">Series</label>
@@ -119,7 +135,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-semibold">Repeticiones</label>
-                            <input type="text" name="ejercicio_repeticiones[]" class="form-control form-control-sm" placeholder="Ej: 12 o 30seg">
+                            <input type="text" name="ejercicio_repeticiones[]" class="form-control form-control-sm" placeholder="Ej: 12 o 30seg" maxlength="50">
                         </div>
                         <div class="col-md-2">
                             <label class="form-label small fw-semibold">Descanso (seg)</label>
@@ -138,7 +154,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         <div class="row g-2">
                             <div class="col-md-4">
                                 <label class="form-label small fw-semibold">Ejercicio</label>
-                                <input type="text" name="ejercicio_nombre[]" class="form-control form-control-sm" value="<?php echo htmlspecialchars($ej['nombre']); ?>">
+                                <input type="text" name="ejercicio_nombre[]" class="form-control form-control-sm" value="<?php echo htmlspecialchars($ej['nombre']); ?>" maxlength="100">
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label small fw-semibold">Series</label>
@@ -146,7 +162,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label small fw-semibold">Repeticiones</label>
-                                <input type="text" name="ejercicio_repeticiones[]" class="form-control form-control-sm" value="<?php echo htmlspecialchars($ej['repeticiones']); ?>">
+                                <input type="text" name="ejercicio_repeticiones[]" class="form-control form-control-sm" value="<?php echo htmlspecialchars($ej['repeticiones']); ?>" maxlength="50">
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label small fw-semibold">Descanso (seg)</label>

@@ -1,7 +1,7 @@
 <?php
 include("../../includes/auth.php");
 include("../../includes/db.php");
-include("../../includes/header.php");
+include("../../includes/validaciones.php");
 
 $id = $_GET['id'];
 $usuario_id = $_SESSION['usuario_id'];
@@ -15,16 +15,26 @@ if(!$marca){
     die("No tienes permiso para editar esta marca.");
 }
 
+$errores = [];
+
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     $marca_valor = trim($_POST['marca']);
     $fecha = trim($_POST['fecha']);
 
-    $stmt = $conexion->prepare("UPDATE marcas_deportivas SET tiempo_o_puntuacion=?, fecha_registro=? WHERE id_marca=? AND id_usuario=?");
-    $stmt->execute([$marca_valor, $fecha, $id, $usuario_id]);
+    $errores = validar_longitudes([
+        [$marca_valor, 20, 'Marca / Puntuación'],
+    ]);
 
-    header("Location: index.php");
-    exit();
+    if(empty($errores)){
+        $stmt = $conexion->prepare("UPDATE marcas_deportivas SET tiempo_o_puntuacion=?, fecha_registro=? WHERE id_marca=? AND id_usuario=?");
+        $stmt->execute([$marca_valor, $fecha, $id, $usuario_id]);
+
+        header("Location: index.php");
+        exit();
+    }
 }
+
+include("../../includes/header.php");
 ?>
 <main style="flex: 1;">
     <div class="container py-5" style="max-width: 600px;">
@@ -37,8 +47,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             <form method="POST" id="formEditar">
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Marca / Puntuación</label>
+                    <?php foreach($errores as $err): ?>
+                        <div class="alert alert-danger py-2 small"><?php echo $err; ?></div>
+                    <?php endforeach; ?>
                     <input type="text" name="marca" class="form-control" 
-                        value="<?php echo htmlspecialchars($marca['tiempo_o_puntuacion']); ?>" required>
+                        value="<?php echo htmlspecialchars($marca['tiempo_o_puntuacion']); ?>" maxlength="20" required>
                 </div>
 
                 <div class="mb-4">
