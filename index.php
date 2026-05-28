@@ -100,7 +100,8 @@ include("includes/header.php");
                     </div>
 
                     <div class="carousel-item">
-                        <img src="https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=1400&q=80" class="d-block w-100" style="height: calc(100vh - 70px); object-fit: cover; filter: brightness(0.55);" alt="Pádel">
+                        <img src="https://images.unsplash.com/photo-1526888935184-a82d2a4b7e67?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+                        " class="d-block w-100" style="height: calc(100vh - 70px); object-fit: cover; filter: brightness(0.55);" alt="Pádel">
                         <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100">
                             <h1 class="display-2 fw-bold mb-3">SPORT<span style="color: var(--dorado-mezquita);">HUB</span> CÓRDOBA</h1>
                             <p class="lead fs-3 mb-4">Juega al pádel en las mejores pistas.</p>

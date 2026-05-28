@@ -45,7 +45,7 @@ $deportes = [
     'padel' => [
         'nombre' => 'Pádel',
         'frase' => 'Juega al pádel en las mejores pistas de Córdoba.',
-        'img' => 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=1400&q=80'
+        'img' => 'https://images.unsplash.com/photo-1526888935184-a82d2a4b7e67?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
     ],
 ];
 
