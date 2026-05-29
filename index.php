@@ -154,7 +154,7 @@ include("includes/header.php");
                         <div class="card card-custom h-100 shadow-sm border-0 text-center p-4">
                             <i class="fa-solid fa-futbol feature-icon"></i>
                             <h4 class="fw-bold">Fútbol</h4>
-                            <p class="small">Rutas por las sierras de nuestra provincia.</p>
+                            <p class="small">Marca goles en los estadios de nuestra provincia.</p>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -175,7 +175,7 @@ include("includes/header.php");
                         <div class="card card-custom h-100 shadow-sm border-0 text-center p-4">
                             <i class="fa-solid fa-basketball feature-icon"></i>
                             <h4 class="fw-bold">Baloncesto</h4>
-                            <p class="small">Rutas por las sierras de nuestra provincia.</p>
+                            <p class="small">Encesta en las pistas de nuestra provincia.</p>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -210,7 +210,7 @@ include("includes/header.php");
                                 <rect x="41" y="80" width="18" height="4" rx="2" fill="var(--crema-mezquita)"/>
                             </svg>
                             <h4 class="fw-bold">Padel</h4>
-                            <p class="small">Rutas por las sierras de nuestra provincia.</p>
+                            <p class="small">Controla la pala en las pistas de nuestra provincia.</p>
                         </div>
                     </div>
                 </div>
