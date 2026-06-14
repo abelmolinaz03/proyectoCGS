@@ -26,34 +26,41 @@ $ejercicios = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 $errores = [];
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    $titulo = trim($_POST['titulo']);
+    $titulo      = trim($_POST['titulo']);
     $descripcion = trim($_POST['descripcion']);
-    $dificultad = $_POST['dificultad'];
-    $duracion = trim($_POST['duracion_minutos']);
-    $duracion = $duracion !== '' ? (int)$duracion : null;
+    $dificultad  = $_POST['dificultad'];
+    $duracion    = trim($_POST['duracion_minutos']);
+    $duracion    = $duracion !== '' ? (int)$duracion : null;
 
+    // Validar longitud del título
     $errores = validar_longitudes([
         [$titulo, 100, 'Título'],
     ]);
 
+    // Solo guarda si NO hay errores (estaba invertido)
     if(empty($errores)){
-    } else {
-        $stmt = $conexion->prepare("UPDATE rutinas SET titulo=?, descripcion=?, dificultad=?, duracion_minutos=? WHERE id_rutina=? AND id_usuario=?");
+        $stmt = $conexion->prepare(
+            "UPDATE rutinas SET titulo=?, descripcion=?, dificultad=?, duracion_minutos=?
+             WHERE id_rutina=? AND id_usuario=?"
+        );
         $stmt->execute([$titulo, $descripcion, $dificultad, $duracion, $id_rutina, $id_usuario]);
 
         $conexion->prepare("DELETE FROM ejercicios_rutina WHERE id_rutina = ?")->execute([$id_rutina]);
 
-        $nombres = $_POST['ejercicio_nombre'] ?? [];
-        $series = $_POST['ejercicio_series'] ?? [];
-        $reps = $_POST['ejercicio_repeticiones'] ?? [];
+        $nombres   = $_POST['ejercicio_nombre'] ?? [];
+        $series    = $_POST['ejercicio_series'] ?? [];
+        $reps      = $_POST['ejercicio_repeticiones'] ?? [];
         $descansos = $_POST['ejercicio_descanso'] ?? [];
 
         foreach($nombres as $i => $nombre){
             if(!empty($nombre)){
-                $serie = isset($series[$i]) && $series[$i] !== '' ? (int)$series[$i] : null;
+                $serie    = isset($series[$i])    && $series[$i]    !== '' ? (int)$series[$i]    : null;
                 $descanso = isset($descansos[$i]) && $descansos[$i] !== '' ? (int)$descansos[$i] : null;
-                $stmt2 = $conexion->prepare("INSERT INTO ejercicios_rutina (id_rutina, nombre, series, repeticiones, descanso_segundos, orden) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt2->execute([$id_rutina, $nombre, $serie, $reps[$i], $descanso, $i+1]);
+                $stmt2 = $conexion->prepare(
+                    "INSERT INTO ejercicios_rutina (id_rutina, nombre, series, repeticiones, descanso_segundos, orden)
+                     VALUES (?, ?, ?, ?, ?, ?)"
+                );
+                $stmt2->execute([$id_rutina, $nombre, $serie, $reps[$i], $descanso, $i + 1]);
             }
         }
 
@@ -169,7 +176,7 @@ include("../../includes/header.php");
             </button>
 
             <div class="d-flex gap-2">
-                <button type="button" class="btn text-white" style="background-color: var(--rojo-mezquita);" onclick="confirmEdit()">
+                <button type="submit" class="btn text-white" style="background-color: var(--rojo-mezquita);">
                     <i class="fa-solid fa-floppy-disk me-2"></i>Guardar cambios
                 </button>
                 <a href="ver.php?id=<?php echo $id_rutina; ?>" class="btn btn-outline-secondary">Cancelar</a>

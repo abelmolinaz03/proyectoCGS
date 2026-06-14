@@ -13,33 +13,42 @@ $deportes = ["Todos", "Atletismo", "Fútbol", "Baloncesto", "Pádel", "Ciclismo"
 $errores = [];
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    $titulo = trim($_POST['titulo']);
-    $descripcion = trim($_POST['descripcion']);
-    $deporte = $_POST['deporte'];
-    $dificultad = $_POST['dificultad'];
-    $duracion = trim($_POST['duracion_minutos']);
-    $duracion = $duracion !== '' ? (int)$duracion : null;
 
-    $errores = validar_longitudes([
-        [$titulo, 100, 'Título'],
-    ]);
+    // Saneamiento y validación centralizados en validaciones.php
+    $resultado = validar_rutina($_POST);
+    $errores   = $resultado['errores'];
+    $datos     = $resultado['datos'];
 
     if(empty($errores)){
-        $stmt = $conexion->prepare("INSERT INTO rutinas (titulo, descripcion, deporte, tipo, id_usuario, dificultad, duracion_minutos) VALUES (?, ?, ?, 'oficial', NULL, ?, ?)");
-        $stmt->execute([$titulo, $descripcion, $deporte, $dificultad, $duracion]);
+        // INSERT con sentencia preparada (PDO)
+        $stmt = $conexion->prepare(
+            "INSERT INTO rutinas (titulo, descripcion, deporte, tipo, id_usuario, dificultad, duracion_minutos)
+             VALUES (?, ?, ?, 'oficial', NULL, ?, ?)"
+        );
+        $stmt->execute([
+            $datos['titulo'],
+            $datos['descripcion'],
+            $datos['deporte'],
+            $datos['dificultad'],
+            $datos['duracion'],
+        ]);
         $id_rutina = $conexion->lastInsertId();
 
-        $nombres = $_POST['ejercicio_nombre'] ?? [];
-        $series = $_POST['ejercicio_series'] ?? [];
-        $reps = $_POST['ejercicio_repeticiones'] ?? [];
-        $descansos = $_POST['ejercicio_descanso'] ?? [];
+        // Insertar ejercicios (ya saneados)
+        $nombres   = $datos['ejercicios']['nombres'];
+        $series    = $datos['ejercicios']['series'];
+        $reps      = $datos['ejercicios']['reps'];
+        $descansos = $datos['ejercicios']['descansos'];
 
         foreach($nombres as $i => $nombre){
             if(!empty($nombre)){
-                $serie = isset($series[$i]) && $series[$i] !== '' ? (int)$series[$i] : null;
-                $descanso = isset($descansos[$i]) && $descansos[$i] !== '' ? (int)$descansos[$i] : null;
-                $stmt2 = $conexion->prepare("INSERT INTO ejercicios_rutina (id_rutina, nombre, series, repeticiones, descanso_segundos, orden) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt2->execute([$id_rutina, $nombre, $serie, $reps[$i], $descanso, $i+1]);
+                $serie    = ($series[$i]    !== '' && $series[$i]    !== 0) ? (int)$series[$i]    : null;
+                $descanso = ($descansos[$i] !== '' && $descansos[$i] !== 0) ? (int)$descansos[$i] : null;
+                $stmt2 = $conexion->prepare(
+                    "INSERT INTO ejercicios_rutina (id_rutina, nombre, series, repeticiones, descanso_segundos, orden)
+                     VALUES (?, ?, ?, ?, ?, ?)"
+                );
+                $stmt2->execute([$id_rutina, $nombre, $serie, $reps[$i], $descanso, $i + 1]);
             }
         }
 

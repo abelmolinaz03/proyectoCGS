@@ -73,7 +73,7 @@ $reservas_pasadas = $stmt2->fetchAll(PDO::FETCH_ASSOC);
                             <i class="fa-solid fa-calendar me-1"></i><?php echo date('d/m/Y', strtotime($r['fecha_reserva'])); ?>
                         </p>
                         <p class="small text-muted mb-0">
-                            <i class="fa-solid fa-clock me-1"></i><?php echo substr($r['hora_inicio'], 0, 5); ?> — <?php echo substr($r['hora_fin'], 0, 5); ?>
+                            <i class="fa-solid fa-clock me-1"></i><?php echo substr($r['hora_inicio'], 0, 5); ?> — <?php echo substr($r['hora_fin'], 0, 5); //Recorta los primeros 5 caracteres para mostrar solo 08:00 en vez de 08:00:00 ?>
                         </p>
                     </div>
                     <a href="reservasuser.php?cancelar=<?php echo $r['id_reserva']; ?>" 

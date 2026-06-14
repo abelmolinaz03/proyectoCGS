@@ -11,41 +11,36 @@ $deportes_disponibles = ["Atletismo", "Fútbol", "Baloncesto", "Pádel", "Ciclis
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $nombre = trim($_POST['nombre']);
-    $apellidos = trim($_POST['apellidos']);
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-    $deporte = $_POST['deporte'] ?? '';
-
-    // Validaciones
-    if (empty($nombre) || empty($apellidos) || empty($email) || empty($password) || empty($deporte)) {
-        $errores[] = "Por favor, completa todos los campos.";
-    }
-
-    $errores = array_merge($errores, validar_longitudes([
-        [$nombre, 50, 'Nombre'],
-        [$apellidos, 100, 'Apellidos'],
-    ]));
+    // Saneamiento y validación centralizados en validaciones.php
+    $resultado = validar_registro($_POST);
+    $errores   = $resultado['errores'];
+    $datos     = $resultado['datos'];
 
     if (empty($errores)) {
         try {
-            // 1. Comprobar si el email ya existe
+            // Comprobar si el email ya existe
             $stmt_check = $conexion->prepare("SELECT id_usuario FROM usuarios WHERE email = ?");
-            $stmt_check->execute([$email]);
-            
+            $stmt_check->execute([$datos['email']]);
+
             if ($stmt_check->rowCount() > 0) {
-                $errores[] = "Este email ya está registrado.";                
+                $errores['email'] = "Este email ya está registrado.";
             } else {
-                // 2. Insertar nuevo usuario una SÓLA VEZ con todos los campos
-                $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-                
-                // Añadimos deporte_principal y el 5º interrogante
-                $stmt = $conexion->prepare("INSERT INTO usuarios (nombre, apellidos, email, password, deporte_principal) VALUES (?, ?, ?, ?, ?)");
-                
-                // Pasamos los 5 valores en el array
-                if ($stmt->execute([$nombre, $apellidos, $email, $passwordHash, $deporte])) {
+                // Insertar nuevo usuario con PDO (sentencia preparada)
+                $passwordHash = password_hash($datos['password'], PASSWORD_DEFAULT);
+
+                $stmt = $conexion->prepare(
+                    "INSERT INTO usuarios (nombre, apellidos, email, password, deporte_principal) VALUES (?, ?, ?, ?, ?)"
+                );
+
+                if ($stmt->execute([
+                    $datos['nombre'],
+                    $datos['apellidos'],
+                    $datos['email'],<
+                    $passwordHash,
+                    $datos['deporte'],
+                ])) {
                     $registro_exitoso = true;
-                    $errores = []; // Limpiamos errores si hubo alguno previo
+                    $errores = [];
                 }
             }
         } catch (PDOException $e) {
@@ -63,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/estilos.css">
     <style>
-        /* Estilo para que el botón use el rojo mezquita de tu proyecto */
+        /* Estilo botón rojo */
         .btn-registro {
             background-color: var(--rojo-mezquita) !important;
             color: white !important;

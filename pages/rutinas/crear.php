@@ -22,7 +22,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty($errores)){
         $stmt = $conexion->prepare("INSERT INTO rutinas (titulo, descripcion, deporte, tipo, id_usuario, dificultad, duracion_minutos) VALUES (?, ?, ?, 'personal', ?, ?, ?)");
         $stmt->execute([$titulo, $descripcion, $deporte, $id_usuario, $dificultad, $duracion]);
-        $id_rutina = $conexion->lastInsertId();
+        $id_rutina = $conexion->lastInsertId(); //Devuelve el id que mysql asignó al insert que acabamos de hacer.
 
         $nombres = $_POST['ejercicio_nombre'] ?? [];
         $series = $_POST['ejercicio_series'] ?? [];

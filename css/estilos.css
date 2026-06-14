@@ -16,7 +16,7 @@ body {
     flex-direction: column;
 }
 
-/* Títulos con Montserrat: Fuente geométrica, pesada y muy actual */
+/* Títulos */
 h1, h2, h3, h4, h5, h6, .navbar-brand {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
@@ -47,7 +47,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
     color: var(--dorado-mezquita) !important;
 }
 
-/* Botones modernos */
+/* Botones */
 .btn {
     font-family: 'Montserrat', sans-serif;
     border-radius: 50px; /* Bordes redondeados para un look más app */
@@ -88,7 +88,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
     padding-bottom: 50px;
 }
 
-/* Tarjetas modernas */
+/* Tarjetas */
 .card-custom {
     border: none;
     border-radius: 20px;
@@ -137,7 +137,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
     box-shadow: 0 15px 35px rgba(139, 0, 0, 0.15) !important;
 }
 
-/* --- ESTILOS UNIFICADOS PARA LOS ICONOS (icon-box) --- */
+/* --- ESTILOS UNIFICADOS PARA LOS ICONOS --- */
 .icon-box {
     width: 80px;
     height: 80px;
@@ -152,6 +152,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
     border: 2px solid var(--dorado-mezquita); /* Borde dorado de detalles */
     box-shadow: 0 5px 15px rgba(139, 0, 0, 0.1); /* Sombra suave con tono rojo */
 }
+
 /* --- ESTILOS DINÁMICOS DEL DASHBOARD --- */
 
 /* Contenedor principal del banner */
@@ -185,7 +186,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
     z-index: 2;
 }
 
-/* --- ESTILOS DE LA PÁGINA PRINCIPAL (LANDING) --- */
+/* --- ESTILOS DE LA PÁGINA PRINCIPAL --- */
 
 .hero-home {
     /* Gradiente con los colores de los arcos sobre la imagen */
@@ -212,7 +213,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
     transition: transform 0.3s ease;
 }
 
-/* Efecto sutil al pasar el ratón por los iconos de deportes */
+/* Efecto hover iconos de deportes */
 .card-custom:hover .feature-icon {
     transform: scale(1.2);
     color: var(--dorado-mezquita);

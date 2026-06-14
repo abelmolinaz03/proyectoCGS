@@ -1,7 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 include("../includes/db.php");
-include("../includes/header.php");
+include("../includes/validaciones.php");
 
 if(!isset($_SESSION['usuario_id']) || $_SESSION['rol'] !== 'admin'){
     header("Location: /proyectoCGS/pages/login.php");
@@ -9,64 +9,83 @@ if(!isset($_SESSION['usuario_id']) || $_SESSION['rol'] !== 'admin'){
 }
 
 $deportes = ["Atletismo", "Fútbol", "Baloncesto", "Pádel", "Ciclismo", "Natación", "Tenis"];
+$errores_producto = [];
 
 // ELIMINAR
 if(isset($_GET['eliminar'])){
-    $conexion->prepare("DELETE FROM productos WHERE id_producto = ?")->execute([$_GET['eliminar']]);
+    $id_eliminar = (int) $_GET['eliminar']; // sanear como entero
+    $conexion->prepare("DELETE FROM productos WHERE id_producto = ?")->execute([$id_eliminar]);
     header("Location: productos.php");
     exit();
 }
 
 // CREAR
 if(isset($_POST['crear'])){
-    $nombre = trim($_POST['nombre']);
-    $descripcion = trim($_POST['descripcion']);
-    $precio = $_POST['precio'];
-    $deporte = $_POST['deporte'];
-    $stock = $_POST['stock'];
-    $imagen = '';
+    $resultado = validar_producto($_POST, $_FILES);
+    $errores_producto = $resultado['errores'];
+    $datos = $resultado['datos'];
 
-    if(!empty($_FILES['imagen']['name'])){
-        $ext = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
-        $imagen = uniqid() . '.' . $ext;
-        move_uploaded_file($_FILES['imagen']['tmp_name'], "../multimedia/productos/" . $imagen);
+    if(empty($errores_producto)){
+        $imagen = '';
+        if(!empty($_FILES['imagen']['name'])){
+            $ext    = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
+            $imagen = uniqid() . '.' . $ext;
+            move_uploaded_file($_FILES['imagen']['tmp_name'], "../multimedia/productos/" . $imagen);
+        }
+
+        $conexion->prepare(
+            "INSERT INTO productos (nombre, descripcion, precio, deporte, stock, imagen) VALUES (?, ?, ?, ?, ?, ?)"
+        )->execute([
+            $datos['nombre'],
+            $datos['descripcion'],
+            $datos['precio'],
+            $datos['deporte'],
+            $datos['stock'],
+            $imagen,
+        ]);
+        header("Location: productos.php");
+        exit();
     }
-
-    $conexion->prepare("INSERT INTO productos (nombre, descripcion, precio, deporte, stock, imagen) VALUES (?, ?, ?, ?, ?, ?)")
-             ->execute([$nombre, $descripcion, $precio, $deporte, $stock, $imagen]);
-    header("Location: productos.php");
-    exit();
 }
 
 // EDITAR
 if(isset($_POST['editar'])){
-    $id = $_POST['id_producto'];
-    $nombre = trim($_POST['nombre']);
-    $descripcion = trim($_POST['descripcion']);
-    $precio = $_POST['precio'];
-    $deporte = $_POST['deporte'];
-    $stock = $_POST['stock'];
+    $id = (int) $_POST['id_producto']; // sanear como entero
+    $resultado = validar_producto($_POST, $_FILES);
+    $errores_producto = $resultado['errores'];
+    $datos = $resultado['datos'];
 
-    // Si sube nueva imagen
-    if(!empty($_FILES['imagen']['name'])){
-        $ext = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
-        $imagen = uniqid() . '.' . $ext;
-        move_uploaded_file($_FILES['imagen']['tmp_name'], "../multimedia/productos/" . $imagen);
-        $conexion->prepare("UPDATE productos SET nombre=?, descripcion=?, precio=?, deporte=?, stock=?, imagen=? WHERE id_producto=?")
-                 ->execute([$nombre, $descripcion, $precio, $deporte, $stock, $imagen, $id]);
-    } else {
-        $conexion->prepare("UPDATE productos SET nombre=?, descripcion=?, precio=?, deporte=?, stock=? WHERE id_producto=?")
-                 ->execute([$nombre, $descripcion, $precio, $deporte, $stock, $id]);
+    if(empty($errores_producto)){
+        if(!empty($_FILES['imagen']['name'])){
+            $ext    = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
+            $imagen = uniqid() . '.' . $ext;
+            move_uploaded_file($_FILES['imagen']['tmp_name'], "../multimedia/productos/" . $imagen);
+            $conexion->prepare(
+                "UPDATE productos SET nombre=?, descripcion=?, precio=?, deporte=?, stock=?, imagen=? WHERE id_producto=?"
+            )->execute([
+                $datos['nombre'], $datos['descripcion'], $datos['precio'],
+                $datos['deporte'], $datos['stock'], $imagen, $id,
+            ]);
+        } else {
+            $conexion->prepare(
+                "UPDATE productos SET nombre=?, descripcion=?, precio=?, deporte=?, stock=? WHERE id_producto=?"
+            )->execute([
+                $datos['nombre'], $datos['descripcion'], $datos['precio'],
+                $datos['deporte'], $datos['stock'], $id,
+            ]);
+        }
+        header("Location: productos.php");
+        exit();
     }
-    header("Location: productos.php");
-    exit();
 }
+
+include("../includes/header.php");
 
 // Obtener producto a editar
 $editando = null;
 if(isset($_GET['editar'])){
     $stmt = $conexion->prepare("SELECT * FROM productos WHERE id_producto = ?");
-    $stmt->execute([$_GET['editar']]);
+    $stmt->execute([(int)$_GET['editar']]);
     $editando = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
@@ -91,6 +110,16 @@ $productos = $conexion->query("SELECT * FROM productos ORDER BY deporte, fecha_c
         <h5 class="fw-bold mb-4" style="color: var(--rojo-mezquita);">
             <?php echo $editando ? 'Editar producto' : 'Añadir nuevo producto'; ?>
         </h5>
+        <?php if(!empty($errores_producto)): ?>
+            <div class="alert alert-danger py-2 small">
+                <ul class="mb-0">
+                    <?php foreach($errores_producto as $msg): ?>
+                        <li><?php echo htmlspecialchars($msg); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
         <form method="POST" enctype="multipart/form-data">
             <?php if($editando): ?>
                 <input type="hidden" name="id_producto" value="<?php echo $editando['id_producto']; ?>">

@@ -1,6 +1,7 @@
 <?php
 include("../../includes/auth.php");
 include("../../includes/db.php");
+include("../../includes/validaciones.php");
 include("../../includes/header.php");
 
 $id_pista = $_GET['id'] ?? null;
@@ -38,21 +39,33 @@ $error = '';
 $exito = false;
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $fecha = $_POST['fecha'];
-    $hora_inicio = $_POST['hora_inicio'];
-    $hora_fin = date('H:i:s', strtotime($hora_inicio) + 3600);
 
-    // Comprobar disponibilidad
-    $stmt2 = $conexion->prepare("SELECT * FROM reservas WHERE id_pista = ? AND fecha_reserva = ? AND hora_inicio = ?");
-    $stmt2->execute([$id_pista, $fecha, $hora_inicio]);
-    $ocupada = $stmt2->fetch();
+    // Saneamiento y validación centralizados en validaciones.php
+    $resultado   = validar_reserva($_POST);
+    $errores     = $resultado['errores'];
+    $datos       = $resultado['datos'];
 
-    if($ocupada){
-        $error = "Esa franja ya está reservada. Elige otra hora o fecha.";
-    } else {
-        $stmt3 = $conexion->prepare("INSERT INTO reservas (id_usuario, id_pista, fecha_reserva, hora_inicio, hora_fin) VALUES (?, ?, ?, ?, ?)");
-        $stmt3->execute([$id_usuario, $id_pista, $fecha, $hora_inicio, $hora_fin]);
-        $exito = true;
+    if(empty($errores)){
+        $fecha       = $datos['fecha'];
+        $hora_inicio = $datos['hora_inicio'];
+        $hora_fin    = date('H:i:s', strtotime($hora_inicio) + 3600);
+
+        // Comprobar disponibilidad con sentencia preparada (PDO)
+        $stmt2 = $conexion->prepare(
+            "SELECT * FROM reservas WHERE id_pista = ? AND fecha_reserva = ? AND hora_inicio = ?"
+        );
+        $stmt2->execute([$id_pista, $fecha, $hora_inicio]);
+        $ocupada = $stmt2->fetch();
+
+        if($ocupada){
+            $errores['franja'] = "Esa franja ya está reservada. Elige otra hora o fecha.";
+        } else {
+            $stmt3 = $conexion->prepare(
+                "INSERT INTO reservas (id_usuario, id_pista, fecha_reserva, hora_inicio, hora_fin) VALUES (?, ?, ?, ?, ?)"
+            );
+            $stmt3->execute([$id_usuario, $id_pista, $fecha, $hora_inicio, $hora_fin]);
+            $exito = true;
+        }
     }
 }
 
@@ -93,8 +106,10 @@ foreach($reservas_existentes as $r){
         </div>
     <?php else: ?>
 
-        <?php if($error): ?>
-            <div class="alert alert-danger"><?php echo $error; ?></div>
+        <?php if(!empty($errores)): ?>
+            <div class="alert alert-danger">
+                <?php echo htmlspecialchars(implode(' ', $errores)); ?>
+            </div>
         <?php endif; ?>
 
         <div class="card border-0 shadow-sm p-4">

@@ -1,28 +1,35 @@
 <?php
 session_start();
 include("../includes/db.php");
+include("../includes/validaciones.php");
 
-$error = "";
+$errores = [];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
 
-    $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE email = ?");
-    $stmt->execute([$email]);
-    $usuario = $stmt->fetch();
+    // Saneamiento y validación centralizados en validaciones.php
+    $resultado = validar_login($_POST);
+    $errores   = $resultado['errores'];
+    $datos     = $resultado['datos'];
 
-    // Verificamos si el usuario existe y la contraseña es correcta
-    if ($usuario && password_verify($password, $usuario['password'])) {
-        $_SESSION['usuario_id'] = $usuario['id_usuario'];
-        $_SESSION['nombre'] = $usuario['nombre'];
-        $_SESSION['deporte_usuario'] = $usuario['deporte_principal'];
-        $_SESSION['rol'] = $usuario['rol'];
-      
-        header("Location: dashboard.php"); 
-        exit();
-    } else {
-        $error = "Email o contraseña incorrectos.";
+    if (empty($errores)) {
+        // Consulta con sentencia preparada (PDO)
+        $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE email = ?");
+        $stmt->execute([$datos['email']]);
+        $usuario = $stmt->fetch();
+
+        // Verificamos si el usuario existe y la contraseña es correcta
+        if ($usuario && password_verify($datos['password'], $usuario['password'])) {
+            $_SESSION['usuario_id'] = $usuario['id_usuario'];
+            $_SESSION['nombre']     = $usuario['nombre'];
+            $_SESSION['deporte_usuario'] = $usuario['deporte_principal'];
+            $_SESSION['rol']        = $usuario['rol'];
+
+            header("Location: dashboard.php");
+            exit();
+        } else {
+            $errores['credenciales'] = "Email o contraseña incorrectos.";
+        }
     }
 }
 ?>
@@ -40,8 +47,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="card p-4 shadow" style="width: 400px; border-radius: 15px;">
         <h3 class="text-center mb-3 fw-bold" style="color: var(--rojo-mezquita);">Bienvenido</h3>
         
-        <?php if($error): ?>
-            <div class="alert alert-danger small"><?php echo $error; ?></div>
+        <?php if(!empty($errores)): ?>
+            <div class="alert alert-danger small">
+                <?php echo htmlspecialchars(implode(' ', $errores)); ?>
+            </div>
         <?php endif; ?>
 
         <form method="POST">

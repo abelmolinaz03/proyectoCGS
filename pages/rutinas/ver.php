@@ -17,7 +17,7 @@ $stmt->execute([$id_rutina, $id_usuario]);
 $rutina = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if(!$rutina){
-    die("No tienes acceso a esta rutina.");
+    die("No tienes acceso a esta rutina."); //Detiene la ejecución del script
 }
 
 // Obtener ejercicios
